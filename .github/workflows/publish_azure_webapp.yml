@@ -58,9 +58,8 @@ jobs:
 
       # Apply Entity Framework Migrations
       - name: Apply EF Migrations
-        run: dotnet ef database update --connection "$DATABASE_CONNECTION" --configuration ${{ env.BUILD_CONFIGURATION }} --startup-project FacilityLeasing/FacilityLeasing.csproj --project FacilityLeasing/FacilityLeasing.csproj
-        env:
-          DATABASE_CONNECTION: ${{ secrets.DATABASE_CONNECTION }}
+        run: dotnet ef database update --connection ${{ env.DATABASE_CONNECTION }} --configuration ${{ env.BUILD_CONFIGURATION }} --startup-project FacilityLeasing/FacilityLeasing.csproj --project FacilityLeasing/FacilityLeasing.csproj
+
 
       # Upload artifacts
       - name: Upload Artifacts
