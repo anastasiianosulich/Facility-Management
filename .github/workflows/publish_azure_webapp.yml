@@ -1,0 +1,68 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - FacilityManagementWebAPI-dev
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "FacilityLeasing/**"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      BUILD_CONFIGURATION: Release
+      DOTNET_VERSION: 8.0
+
+    steps:
+      # Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Setup .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Install NuGet Tool
+      - name: Install NuGet Tool
+        run: nuget install -Version latest
+
+      # Restore NuGet Packages
+      - name: Restore NuGet Packages
+        run: dotnet restore "**/FacilityLeasing.sln"
+
+      # Build the solution
+      - name: Build Solution
+        run: dotnet build "**/HRHub.Api.csproj" --configuration ${{ env.BUILD_CONFIGURATION }}
+
+      # Run tests
+      - name: Run Tests
+        run: dotnet test "**/FacilityLeasing.sln" --configuration ${{ env.BUILD_CONFIGURATION }}
+
+      # Publish the project
+      - name: Publish Project
+        run: dotnet publish "**/FacilityLeasing.csproj" --configuration ${{ env.BUILD_CONFIGURATION }} --output ./publish
+
+      # Install dotnet-ef globally
+      - name: Install dotnet-ef Tool
+        run: dotnet tool install --global dotnet-ef --version 7.0.13
+
+      # Add EF Tool to PATH
+      - name: Add EF Tool to PATH
+        run: echo "${{ github.workspace }}/.dotnet/tools" >> $GITHUB_PATH
+
+      # Apply Entity Framework Migrations
+      - name: Apply EF Migrations
+        run: dotnet ef database update --connection "$DATABASE_CONNECTION" --configuration ${{ env.BUILD_CONFIGURATION }} --startup-project FacilityLeasing/FacilityLeasing.csproj --project FacilityLeasing/FacilityLeasing.csproj
+        env:
+          DATABASE_CONNECTION: ${{ secrets.DATABASE_CONNECTION }}
+
+      # Upload artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./publish
