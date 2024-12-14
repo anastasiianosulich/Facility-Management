@@ -33,7 +33,7 @@ jobs:
 
       # Restore NuGet Packages
       - name: Restore NuGet Packages
-        run: dotnet restore "**/FacilityLeasing.sln"
+        run: dotnet restore "FacilityLeasing.sln"
 
       # Build the solution
       - name: Build Solution
@@ -41,7 +41,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: dotnet test "**/FacilityLeasing.sln" --configuration ${{ env.BUILD_CONFIGURATION }}
+        run: dotnet test "FacilityLeasing.sln" --configuration ${{ env.BUILD_CONFIGURATION }}
 
       # Publish the project
       - name: Publish Project
