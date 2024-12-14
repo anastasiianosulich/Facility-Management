@@ -50,7 +50,7 @@ jobs:
 
       # Install dotnet-ef globally
       - name: Install dotnet-ef Tool
-        run: dotnet tool install --global dotnet-ef --version 7.0.13
+        run: dotnet tool install --global dotnet-ef --version 8.0
 
       # Add EF Tool to PATH
       - name: Add EF Tool to PATH
