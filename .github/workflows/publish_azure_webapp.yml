@@ -15,6 +15,7 @@ jobs:
     env:
       BUILD_CONFIGURATION: Release
       DOTNET_VERSION: 8.0
+      DATABASE_CONNECTION: ${{ secrets.DATABASE_CONNECTION }}
 
     steps:
       # Checkout code
